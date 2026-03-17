@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model DsaProblem {
+  id           String   @id @default(uuid())
+  name         String
+  pattern      String   // HashMap, SlidingWindow, Stack, Heap, PrefixSum, Greedy
+  difficulty   String   // Easy, Medium, Hard
+  status       String   @default("NotStarted") // NotStarted, Solving, Solved, Revision
+  notes        String   @default("")
+  dateSolved   DateTime?
+  confidence   Int      @default(0) // 1-5
+  weakPoints   String   @default("") // comma-separated weak points
+  coreIdea     String   @default("")
+  keyLine      String   @default("")
+  edgeCase     String   @default("")
+  timeSpace    String   @default("")
+  leetcodeNum  Int?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  conversations AiConversation[]
+}
+
+model AiConversation {
+  id         String   @id @default(uuid())
+  problemId  String?
+  problem    DsaProblem? @relation(fields: [problemId], references: [id])
+  message    String
+  role       String   // user or assistant
+  sessionId  String   @default("default")
+  createdAt  DateTime @default(now())
+}
+
+model DailyTask {
+  id        String   @id @default(uuid())
+  date      String   // YYYY-MM-DD
+  type      String   // dsa_new, dsa_revision, project, core_subjects
+  title     String
+  details   String   @default("") // JSON string for extra info
+  status    String   @default("pending") // pending, completed
+  priority  Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model RakshakTask {
+  id        String   @id @default(uuid())
+  title     String
+  category  String   // backend, android, architecture, docs
+  status    String   @default("todo") // todo, in_progress, done
+  priority  Int      @default(0)
+  details   String   @default("")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CoreSubject {
+  id        String   @id @default(uuid())
+  subject   String   // OOP, OS, DB, Networks, SystemDesign
+  topic     String
+  notes     String   @default("")
+  progress  Int      @default(0) // 0-100
+  completed Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserStats {
+  id             String   @id @default("main")
+  currentStreak  Int      @default(0)
+  longestStreak  Int      @default(0)
+  totalHours     Float    @default(0)
+  weeklyHours    Float    @default(0)
+  lastActiveDate String   @default("")
+  startDate      String   @default("2026-03-09") // started 8 days ago
+  targetProblems Int      @default(300)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}

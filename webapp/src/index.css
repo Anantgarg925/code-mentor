@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 225 15% 6%;
+    --foreground: 210 20% 92%;
+
+    --card: 225 15% 9%;
+    --card-foreground: 210 20% 92%;
+
+    --popover: 225 15% 9%;
+    --popover-foreground: 210 20% 92%;
+
+    --primary: 160 85% 45%;
+    --primary-foreground: 225 15% 6%;
+
+    --secondary: 225 12% 14%;
+    --secondary-foreground: 210 15% 75%;
+
+    --muted: 225 12% 14%;
+    --muted-foreground: 215 15% 50%;
+
+    --accent: 35 95% 55%;
+    --accent-foreground: 225 15% 6%;
+
+    --destructive: 0 75% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 225 12% 16%;
+    --input: 225 12% 16%;
+    --ring: 160 85% 45%;
+
+    --radius: 0.625rem;
+
+    --sidebar-background: 225 15% 7%;
+    --sidebar-foreground: 210 15% 75%;
+    --sidebar-primary: 160 85% 45%;
+    --sidebar-primary-foreground: 225 15% 6%;
+    --sidebar-accent: 225 12% 12%;
+    --sidebar-accent-foreground: 210 20% 92%;
+    --sidebar-border: 225 12% 14%;
+    --sidebar-ring: 160 85% 45%;
+
+    --chart-1: 160 85% 45%;
+    --chart-2: 35 95% 55%;
+    --chart-3: 210 90% 55%;
+    --chart-4: 270 70% 60%;
+    --chart-5: 180 70% 45%;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
+
+@layer utilities {
+  .glass {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .glow-green {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3), 0 0 60px rgba(16, 185, 129, 0.1);
+  }
+
+  .glow-amber {
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.3), 0 0 60px rgba(245, 158, 11, 0.1);
+  }
+}
