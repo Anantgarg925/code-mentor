@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Edit, Trash2 } from "lucide-react";
+import { Edit, Trash2, ExternalLink } from "lucide-react";
 import type { DsaProblem } from "@/hooks/use-api";
 
 interface ProblemDetailProps {
@@ -26,6 +26,10 @@ function DetailItem({ label, value }: { label: string; value: string }) {
 }
 
 export function ProblemDetail({ problem, onEdit, onDelete }: ProblemDetailProps) {
+  const leetcodeUrl = problem.leetcodeNum
+    ? `https://leetcode.com/problems/${problem.name.toLowerCase().replace(/[^a-z0-9\s-]/g, "").replace(/\s+/g, "-")}/`
+    : `https://leetcode.com/problemset/?search=${encodeURIComponent(problem.name)}`;
+
   return (
     <motion.tr
       initial={{ opacity: 0, height: 0 }}
@@ -72,6 +76,17 @@ export function ProblemDetail({ problem, onEdit, onDelete }: ProblemDetailProps)
               </div>
 
               <div className="flex items-center gap-2 pt-1">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-1.5"
+                  asChild
+                >
+                  <a href={leetcodeUrl} target="_blank" rel="noopener noreferrer">
+                    <ExternalLink className="h-3.5 w-3.5" />
+                    Solve on LeetCode
+                  </a>
+                </Button>
                 <Button
                   variant="outline"
                   size="sm"

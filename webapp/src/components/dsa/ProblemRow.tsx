@@ -1,8 +1,21 @@
-import { Star, ChevronDown, ChevronUp } from "lucide-react";
+import { Star, ChevronDown, ChevronUp, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import type { DsaProblem } from "@/hooks/use-api";
+
+function getLeetcodeUrl(problem: DsaProblem): string {
+  if (problem.leetcodeNum) {
+    // Convert name to slug: "Two Sum" -> "two-sum"
+    const slug = problem.name
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, "")
+      .replace(/\s+/g, "-");
+    return `https://leetcode.com/problems/${slug}/`;
+  }
+  // Fallback: search LeetCode for the problem name
+  return `https://leetcode.com/problemset/?search=${encodeURIComponent(problem.name)}`;
+}
 
 const DIFFICULTY_COLORS: Record<string, string> = {
   Easy: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
@@ -61,10 +74,31 @@ export function ProblemRow({ problem, isExpanded, onToggle }: ProblemRowProps) {
       onClick={onToggle}
     >
       <TableCell className="font-mono text-xs text-muted-foreground w-[60px]">
-        {problem.leetcodeNum ? `#${problem.leetcodeNum}` : "--"}
+        {problem.leetcodeNum ? (
+          <a
+            href={getLeetcodeUrl(problem)}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="hover:text-primary transition-colors"
+          >
+            #{problem.leetcodeNum}
+          </a>
+        ) : (
+          "--"
+        )}
       </TableCell>
       <TableCell className="font-medium text-sm max-w-[200px] truncate">
-        {problem.name}
+        <a
+          href={getLeetcodeUrl(problem)}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()}
+          className="inline-flex items-center gap-1.5 hover:text-primary transition-colors group"
+        >
+          {problem.name}
+          <ExternalLink className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground" />
+        </a>
       </TableCell>
       <TableCell>
         <Badge variant="outline" className={cn("text-xs border", patternColor)}>
