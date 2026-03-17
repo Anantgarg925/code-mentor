@@ -440,7 +440,7 @@ TEACHING RULES:
     const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
     let response = await anthropic.messages.create({
-      model: "claude-opus-4-20250514",
+      model: "claude-opus-4-5",
       max_tokens: 4096,
       system: systemPrompt,
       tools,
@@ -480,7 +480,7 @@ TEACHING RULES:
 
       // Ask the model to continue
       response = await anthropic.messages.create({
-        model: "claude-opus-4-20250514",
+        model: "claude-opus-4-5",
         max_tokens: 4096,
         system: systemPrompt,
         tools,
