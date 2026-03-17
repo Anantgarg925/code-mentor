@@ -16,7 +16,7 @@ export function AppLayout() {
     <div className="flex h-screen overflow-hidden bg-background">
       {/* Desktop sidebar */}
       {!isMobile ? (
-        <aside className="hidden md:flex w-[260px] shrink-0 flex-col border-r border-sidebar-border bg-sidebar glass">
+        <aside className="hidden md:flex w-[260px] shrink-0 flex-col border-r border-sidebar-border glass-strong bg-sidebar">
           <SidebarNav />
         </aside>
       ) : null}
@@ -42,8 +42,14 @@ export function AppLayout() {
         </Sheet>
       ) : null}
 
-      {/* Main content */}
-      <main className="flex-1 overflow-y-auto">
+      {/* Main content with subtle radial glow */}
+      <main
+        className="relative flex-1 overflow-y-auto"
+        style={{
+          background:
+            "radial-gradient(ellipse at top right, hsl(160 80% 42% / 0.04) 0%, transparent 60%), hsl(var(--background))",
+        }}
+      >
         <div
           key={location.pathname}
           className={cn(

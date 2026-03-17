@@ -2,7 +2,9 @@ import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { CheckCircle2, Circle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { CheckCircle2, Circle, CalendarPlus } from "lucide-react";
+import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import type { DailyTask } from "@/hooks/use-api";
 import { useDailyTasks, useUpdateDailyTask } from "@/hooks/use-api";
@@ -108,9 +110,22 @@ export function TodayTasks() {
             ))}
           </div>
         ) : (
-          <p className="text-sm text-muted-foreground py-4 text-center">
-            No tasks for today. Check the planner to set up your schedule.
-          </p>
+          <div className="py-8 flex flex-col items-center gap-4 text-center">
+            <div className="h-12 w-12 rounded-full bg-muted/50 border border-border flex items-center justify-center">
+              <CalendarPlus className="h-5 w-5 text-muted-foreground" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-foreground">No tasks today</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Generate your daily plan to get started
+              </p>
+            </div>
+            <Button asChild size="sm" className="rounded-full bg-primary/10 hover:bg-primary/20 text-primary border border-primary/25 shadow-none">
+              <Link to="/planner">
+                Generate Plan
+              </Link>
+            </Button>
+          </div>
         )}
       </CardContent>
     </Card>

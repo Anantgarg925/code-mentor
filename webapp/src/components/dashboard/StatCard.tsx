@@ -10,6 +10,7 @@ interface StatCardProps {
   trend?: { value: string; positive: boolean };
   children?: React.ReactNode;
   className?: string;
+  accentColor?: string;
 }
 
 export function StatCard({
@@ -20,41 +21,49 @@ export function StatCard({
   trend,
   children,
   className,
+  accentColor = "border-primary/40",
 }: StatCardProps) {
   return (
-    <Card className={cn("glass border-border/50 overflow-hidden", className)}>
-      <CardContent className="p-5">
+    <Card
+      className={cn(
+        "glass border-border/50 overflow-hidden relative",
+        "border-l-2",
+        accentColor,
+        className
+      )}
+    >
+      <CardContent className="p-5 pt-6">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="rounded-lg bg-primary/10 p-2">
+            <div className="rounded-lg bg-primary/10 border border-primary/15 p-2">
               <Icon className="h-4 w-4 text-primary" />
             </div>
-            <span className="text-sm font-medium text-muted-foreground">
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
               {label}
             </span>
           </div>
           {trend ? (
             <span
               className={cn(
-                "text-xs font-medium px-2 py-0.5 rounded-full",
+                "text-xs font-semibold px-2 py-0.5 rounded-full font-mono",
                 trend.positive
-                  ? "text-emerald-400 bg-emerald-400/10"
-                  : "text-red-400 bg-red-400/10"
+                  ? "text-emerald-400 bg-emerald-400/10 border border-emerald-400/20"
+                  : "text-red-400 bg-red-400/10 border border-red-400/20"
               )}
             >
               {trend.value}
             </span>
           ) : null}
         </div>
-        <div className="mt-3">
+        <div className="mt-4">
           <p className="text-2xl font-bold font-mono tracking-tight text-foreground">
             {value}
           </p>
           {subtitle ? (
-            <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>
+            <p className="text-xs text-muted-foreground mt-1.5">{subtitle}</p>
           ) : null}
         </div>
-        {children ? <div className="mt-3">{children}</div> : null}
+        {children ? <div className="mt-4">{children}</div> : null}
       </CardContent>
     </Card>
   );

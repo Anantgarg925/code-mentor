@@ -53,8 +53,9 @@ export function ChatInput({ onSend, isLoading, hasMessages }: ChatInputProps) {
       ) : null}
       <div
         className={cn(
-          "flex items-end gap-2 rounded-xl border bg-card/60 px-3 py-2 transition-all duration-200",
-          "focus-within:border-primary/50 focus-within:shadow-[0_0_12px_rgba(16,185,129,0.15)]"
+          "flex items-end gap-3 rounded-2xl border bg-card/70 px-4 py-3 transition-all duration-200",
+          "border-border/70",
+          "focus-within:border-primary/50 focus-within:shadow-[0_0_0_1px_hsl(160_80%_42%/0.15),0_0_16px_hsl(160_80%_42%/0.1)]"
         )}
       >
         <textarea
@@ -62,16 +63,22 @@ export function ChatInput({ onSend, isLoading, hasMessages }: ChatInputProps) {
           value={value}
           onChange={(e) => setValue(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Ask your AI mentor anything about DSA..."
+          placeholder="Ask me anything about DSA, Core Subjects, or your Rakshak project..."
           disabled={isLoading}
           rows={1}
-          className="flex-1 resize-none bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none disabled:opacity-50 py-1 min-h-[24px]"
+          className="flex-1 resize-none bg-transparent text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none disabled:opacity-50 py-0.5 min-h-[24px] leading-relaxed"
         />
         <Button
           size="icon"
           onClick={handleSend}
           disabled={!value.trim() || isLoading}
-          className="shrink-0 h-8 w-8 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-30"
+          className={cn(
+            "shrink-0 h-9 w-9 rounded-full transition-all duration-200",
+            "bg-primary text-primary-foreground",
+            "hover:bg-primary/90 hover:scale-105",
+            "disabled:opacity-30 disabled:scale-100",
+            "shadow-[0_0_12px_hsl(160_80%_42%/0.3)]"
+          )}
         >
           {isLoading ? (
             <Loader2 className="h-4 w-4 animate-spin" />
@@ -80,8 +87,8 @@ export function ChatInput({ onSend, isLoading, hasMessages }: ChatInputProps) {
           )}
         </Button>
       </div>
-      <p className="text-[11px] text-muted-foreground text-center">
-        Press Enter to send, Shift+Enter for new line
+      <p className="text-[11px] text-muted-foreground/50 text-center">
+        Enter to send · Shift+Enter for new line
       </p>
     </div>
   );

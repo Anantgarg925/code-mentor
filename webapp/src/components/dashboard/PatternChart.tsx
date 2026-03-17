@@ -16,6 +16,12 @@ function confidenceLabel(avg: number): string {
   return "text-red-400";
 }
 
+function getCurrentPhase(count: number): { label: string; color: string } {
+  if (count < 30) return { label: "Foundation", color: "text-blue-400 bg-blue-400/10 border-blue-400/20" };
+  if (count < 100) return { label: "Building", color: "text-amber-400 bg-amber-400/10 border-amber-400/20" };
+  return { label: "Advanced", color: "text-emerald-400 bg-emerald-400/10 border-emerald-400/20" };
+}
+
 interface PatternChartProps {
   patterns: PatternMastery[] | undefined;
   isLoading: boolean;
@@ -38,13 +44,20 @@ export function PatternChart({ patterns, isLoading }: PatternChartProps) {
   }
 
   const maxCount = Math.max(...(patterns ?? []).map((p) => p.count), 1);
+  const totalSolved = (patterns ?? []).reduce((sum, p) => sum + p.count, 0);
+  const phase = getCurrentPhase(totalSolved);
 
   return (
     <Card className="glass border-border/50">
       <CardHeader className="pb-2">
-        <CardTitle className="text-base font-semibold">
-          Pattern Mastery
-        </CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-base font-semibold">
+            Pattern Mastery
+          </CardTitle>
+          <span className={cn("text-[10px] font-semibold px-2 py-0.5 rounded-full border", phase.color)}>
+            {phase.label} Phase
+          </span>
+        </div>
       </CardHeader>
       <CardContent className="space-y-3">
         {patterns && patterns.length > 0 ? (

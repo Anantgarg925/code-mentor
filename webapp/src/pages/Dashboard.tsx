@@ -1,7 +1,9 @@
 import { motion } from "framer-motion";
-import { Flame } from "lucide-react";
+import { Flame, ArrowRight } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import { useDashboard } from "@/hooks/use-api";
 import { StatsGrid } from "@/components/dashboard/StatsGrid";
 import { PatternChart } from "@/components/dashboard/PatternChart";
@@ -11,6 +13,12 @@ import { QuickActions } from "@/components/dashboard/QuickActions";
 
 const TOTAL_TARGET = 300;
 const TOTAL_DAYS = 105;
+
+function getMotivationalMessage(pct: number): string {
+  if (pct < 30) return "Foundation phase — every problem builds your intuition.";
+  if (pct < 60) return "Building momentum — you're finding your rhythm.";
+  return "Final push mode — the finish line is in sight!";
+}
 
 export default function Dashboard() {
   const { data, isLoading } = useDashboard();
@@ -28,46 +36,73 @@ export default function Dashboard() {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="space-y-4"
+        className="rounded-2xl border border-border/60 glass p-6 md:p-8 space-y-6"
       >
         {isLoading ? (
-          <div className="space-y-3">
-            <Skeleton className="h-10 w-3/4 max-w-md" />
+          <div className="space-y-4">
+            <Skeleton className="h-14 w-1/3 max-w-[120px]" />
             <Skeleton className="h-5 w-2/3 max-w-sm" />
             <Skeleton className="h-3 w-full max-w-lg" />
           </div>
         ) : (
           <>
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
-                Welcome back!{" "}
-                <span className="text-primary">
-                  {monthsToPlacement} months to placements
-                </span>
-              </h1>
-              <p className="mt-2 text-sm md:text-base text-muted-foreground flex flex-wrap items-center gap-x-2 gap-y-1">
-                <span className="font-mono text-foreground">
-                  {problemsSolved}/{TOTAL_TARGET}
-                </span>{" "}
-                problems solved
-                <span className="text-border">|</span>
-                <span className="inline-flex items-center gap-1">
-                  <Flame className="h-4 w-4 text-amber-400 fill-amber-400" />
-                  <span className="font-mono text-foreground">{streak}</span>{" "}
-                  day streak
-                </span>
-                <span className="text-border">|</span>
-                Day{" "}
-                <span className="font-mono text-foreground">{currentDay}</span>{" "}
-                of {TOTAL_DAYS}
-              </p>
-            </div>
-            <div className="max-w-lg space-y-1.5">
-              <div className="flex items-center justify-between text-xs text-muted-foreground">
-                <span>Overall progress</span>
-                <span className="font-mono">{progressPct}%</span>
+            {/* Top row: day counter + placement */}
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+              <div>
+                <div className="flex items-baseline gap-3">
+                  <span className="text-6xl md:text-7xl font-bold font-mono tracking-tight gradient-primary-text">
+                    {currentDay}
+                  </span>
+                  <div>
+                    <p className="text-sm text-muted-foreground font-medium">
+                      of {TOTAL_DAYS} days
+                    </p>
+                    <p className="text-xs text-muted-foreground/70 mt-0.5">
+                      {monthsToPlacement} months to placements
+                    </p>
+                  </div>
+                </div>
+                <p className="mt-2 text-sm text-muted-foreground max-w-sm">
+                  {getMotivationalMessage(progressPct)}
+                </p>
               </div>
-              <Progress value={progressPct} className="h-2.5" />
+
+              {/* Streak badge */}
+              <div className="flex items-center gap-2 rounded-xl border border-amber-500/20 bg-amber-500/8 px-4 py-3 shrink-0 self-start">
+                <Flame className="h-5 w-5 text-amber-400 fill-amber-400" />
+                <div>
+                  <p className="text-lg font-bold font-mono text-amber-400 leading-none">
+                    {streak}
+                  </p>
+                  <p className="text-[10px] text-amber-400/70 mt-0.5">day streak</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Progress bar */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-2xl font-bold font-mono text-foreground">
+                    {problemsSolved}
+                  </span>
+                  <span className="text-base text-muted-foreground font-mono">
+                    / {TOTAL_TARGET}
+                  </span>
+                  <span className="text-sm text-muted-foreground ml-1">
+                    problems solved
+                  </span>
+                </div>
+                <span className="font-mono text-sm font-semibold text-primary">
+                  {progressPct}%
+                </span>
+              </div>
+              <div className="relative h-3 w-full overflow-hidden rounded-full bg-border/50">
+                <div
+                  className="absolute inset-y-0 left-0 rounded-full bg-primary transition-all duration-700 progress-glow"
+                  style={{ width: `${progressPct}%` }}
+                />
+              </div>
             </div>
           </>
         )}

@@ -31,6 +31,8 @@ interface RevisionQueueProps {
 }
 
 export function RevisionQueue({ problems, isLoading }: RevisionQueueProps) {
+  const count = problems?.length ?? 0;
+
   if (isLoading) {
     return (
       <Card className="glass border-border/50">
@@ -49,9 +51,16 @@ export function RevisionQueue({ problems, isLoading }: RevisionQueueProps) {
   return (
     <Card className="glass border-border/50">
       <CardHeader className="pb-2">
-        <CardTitle className="text-base font-semibold">
-          Revision Queue
-        </CardTitle>
+        <div className="flex items-center gap-3">
+          <CardTitle className="text-base font-semibold">
+            Revision Queue
+          </CardTitle>
+          {count > 0 ? (
+            <span className="inline-flex items-center justify-center h-5 min-w-5 px-1.5 rounded-full bg-primary/15 border border-primary/25 text-[10px] font-mono font-bold text-primary">
+              {count}
+            </span>
+          ) : null}
+        </div>
       </CardHeader>
       <CardContent>
         {problems && problems.length > 0 ? (

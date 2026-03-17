@@ -50,7 +50,7 @@ export function StatsGrid({ data, isLoading }: StatsGridProps) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <Skeleton key={i} className="h-[140px] rounded-xl" />
+          <Skeleton key={i} className="h-[160px] rounded-xl" />
         ))}
       </div>
     );
@@ -62,12 +62,14 @@ export function StatsGrid({ data, isLoading }: StatsGridProps) {
   const cards = [
     {
       key: "problems",
+      accentColor: "border-primary/40",
       el: (
         <StatCard
           icon={Target}
           label="Problems Solved"
           value={`${data?.problemsSolved ?? 0} / ${totalTarget}`}
           subtitle={`${Math.round(((data?.problemsSolved ?? 0) / totalTarget) * 100)}% of target`}
+          accentColor="border-primary/40"
         >
           <MiniProgressRing value={data?.problemsSolved ?? 0} max={totalTarget} />
         </StatCard>
@@ -89,6 +91,7 @@ export function StatsGrid({ data, isLoading }: StatsGridProps) {
               ? `${topPattern.count} problems practiced`
               : "Solve problems to track patterns"
           }
+          accentColor="border-blue-400/40"
         />
       ),
     },
@@ -101,6 +104,7 @@ export function StatsGrid({ data, isLoading }: StatsGridProps) {
           value="14h"
           subtitle="2h/day avg"
           trend={{ value: "+12%", positive: true }}
+          accentColor="border-purple-400/40"
         />
       ),
     },
@@ -112,6 +116,7 @@ export function StatsGrid({ data, isLoading }: StatsGridProps) {
           label="Current Streak"
           value={`${data?.stats?.currentStreak ?? 0} days`}
           subtitle="Keep the momentum going!"
+          accentColor="border-amber-400/40"
         >
           <div className="flex gap-0.5">
             {Array.from({ length: Math.min(data?.stats?.currentStreak ?? 0, 7) }).map(

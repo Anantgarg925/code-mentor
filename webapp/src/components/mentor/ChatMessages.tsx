@@ -49,8 +49,8 @@ export function ChatMessages({
   return (
     <div className="flex-1 overflow-y-auto px-4 md:px-6 py-6 space-y-4">
       <AnimatePresence mode="popLayout">
-        {messages.map((msg) => (
-          <ChatBubble key={msg.id} message={msg} />
+        {messages.map((msg, i) => (
+          <ChatBubble key={msg.id} message={msg} index={i} />
         ))}
       </AnimatePresence>
       {isThinking ? <ThinkingIndicator /> : null}

@@ -86,13 +86,16 @@ export default function AiMentor() {
       {/* Main chat area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
-        <div className="flex items-center justify-between px-4 md:px-6 py-3 border-b border-border bg-background/80 backdrop-blur-sm">
+        <div className="flex items-center justify-between px-4 md:px-6 py-4 border-b border-border bg-background/80 backdrop-blur-sm">
           <div className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
+            <div className="relative h-9 w-9 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
               <Brain className="h-5 w-5 text-primary" />
+              <span className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-primary border-2 border-background">
+                <span className="absolute inset-0 rounded-full bg-primary animate-ping opacity-60" />
+              </span>
             </div>
             <div>
-              <h1 className="text-base font-semibold text-foreground">
+              <h1 className="text-lg font-bold tracking-tight gradient-primary-text">
                 AI Mentor
               </h1>
               <p className="text-xs text-muted-foreground">
@@ -101,26 +104,33 @@ export default function AiMentor() {
             </div>
           </div>
 
-          {/* Mobile context toggle */}
-          {isMobile ? (
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-9 w-9 text-muted-foreground"
-                >
-                  <PanelRight className="h-5 w-5" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] p-0">
-                <MobileContextContent
-                  data={dashboard}
-                  isLoading={dashboardLoading}
-                />
-              </SheetContent>
-            </Sheet>
-          ) : null}
+          <div className="flex items-center gap-2">
+            <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-primary/25 bg-primary/10 px-2.5 py-1 text-[10px] font-semibold text-primary">
+              <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+              Core Subjects auto-notes ON
+            </span>
+
+            {/* Mobile context toggle */}
+            {isMobile ? (
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 text-muted-foreground"
+                  >
+                    <PanelRight className="h-5 w-5" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-[300px] p-0">
+                  <MobileContextContent
+                    data={dashboard}
+                    isLoading={dashboardLoading}
+                  />
+                </SheetContent>
+              </Sheet>
+            ) : null}
+          </div>
         </div>
 
         {/* Messages */}
