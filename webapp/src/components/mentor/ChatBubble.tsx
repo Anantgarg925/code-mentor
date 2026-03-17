@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Bot, User, Copy, Check, BookOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { MentorMessage } from "@/hooks/use-api";
+import { MermaidDiagram } from "@/components/mentor/MermaidDiagram";
 
 interface ChatBubbleProps {
   message: MentorMessage;
@@ -17,9 +18,9 @@ function parseMarkdown(text: string): React.ReactNode[] {
   while (i < lines.length) {
     const line = lines[i];
 
-    // Code block
+    // Code block (including mermaid)
     if (line.startsWith("```")) {
-      const lang = line.slice(3).trim();
+      const lang = line.slice(3).trim().toLowerCase();
       const codeLines: string[] = [];
       i++;
       while (i < lines.length && !lines[i].startsWith("```")) {
@@ -28,9 +29,17 @@ function parseMarkdown(text: string): React.ReactNode[] {
       }
       i++; // skip closing ```
       const code = codeLines.join("\n");
-      nodes.push(
-        <CodeBlock key={`code-${nodes.length}`} code={code} language={lang} />
-      );
+
+      // Render mermaid blocks as visual diagrams
+      if (lang === "mermaid") {
+        nodes.push(
+          <MermaidDiagram key={`mermaid-${nodes.length}`} code={code} />
+        );
+      } else {
+        nodes.push(
+          <CodeBlock key={`code-${nodes.length}`} code={code} language={lang} />
+        );
+      }
       continue;
     }
 
