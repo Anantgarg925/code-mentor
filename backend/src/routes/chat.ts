@@ -1,143 +1,122 @@
 import { Hono } from "hono";
-import OpenAI from "openai";
+import Anthropic from "@anthropic-ai/sdk";
 import prisma from "../db";
 import { ChatMessageSchema } from "../types";
 
 const chatRouter = new Hono();
 
 // ---------------------------------------------------------------------------
-// OpenAI tool definitions – gives the AI read/write access to all user data
+// Anthropic tool definitions – gives the AI read/write access to all user data
 // ---------------------------------------------------------------------------
 
-const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
+const tools: Anthropic.Tool[] = [
   {
-    type: "function",
-    function: {
-      name: "create_daily_task",
-      description: "Create a new daily task for the user",
-      parameters: {
-        type: "object",
-        properties: {
-          date: { type: "string", description: "Date in YYYY-MM-DD format" },
-          type: { type: "string", enum: ["dsa_new", "dsa_revision", "project", "core_subjects"], description: "Task type" },
-          title: { type: "string", description: "Task title" },
-          priority: { type: "number", description: "Priority (1=highest)" },
-        },
-        required: ["date", "type", "title"],
+    name: "create_daily_task",
+    description: "Create a new daily task for the user",
+    input_schema: {
+      type: "object",
+      properties: {
+        date: { type: "string", description: "Date in YYYY-MM-DD format" },
+        type: { type: "string", enum: ["dsa_new", "dsa_revision", "project", "core_subjects"], description: "Task type" },
+        title: { type: "string", description: "Task title" },
+        priority: { type: "number", description: "Priority (1=highest)" },
       },
+      required: ["date", "type", "title"],
     },
   },
   {
-    type: "function",
-    function: {
-      name: "complete_daily_task",
-      description: "Mark a daily task as completed",
-      parameters: {
-        type: "object",
-        properties: {
-          taskId: { type: "string", description: "The task ID to complete" },
-        },
-        required: ["taskId"],
+    name: "complete_daily_task",
+    description: "Mark a daily task as completed",
+    input_schema: {
+      type: "object",
+      properties: {
+        taskId: { type: "string", description: "The task ID to complete" },
       },
+      required: ["taskId"],
     },
   },
   {
-    type: "function",
-    function: {
-      name: "update_problem",
-      description: "Update a DSA problem's status, confidence, notes, or weak points",
-      parameters: {
-        type: "object",
-        properties: {
-          problemId: { type: "string", description: "The problem ID" },
-          status: { type: "string", enum: ["NotStarted", "Solving", "Solved", "Revision"] },
-          confidence: { type: "number", description: "Confidence 1-5" },
-          notes: { type: "string" },
-          weakPoints: { type: "string" },
-          coreIdea: { type: "string" },
-          keyLine: { type: "string" },
-          edgeCase: { type: "string" },
-          timeSpace: { type: "string" },
-        },
-        required: ["problemId"],
+    name: "update_problem",
+    description: "Update a DSA problem's status, confidence, notes, or weak points",
+    input_schema: {
+      type: "object",
+      properties: {
+        problemId: { type: "string", description: "The problem ID" },
+        status: { type: "string", enum: ["NotStarted", "Solving", "Solved", "Revision"] },
+        confidence: { type: "number", description: "Confidence 1-5" },
+        notes: { type: "string" },
+        weakPoints: { type: "string" },
+        coreIdea: { type: "string" },
+        keyLine: { type: "string" },
+        edgeCase: { type: "string" },
+        timeSpace: { type: "string" },
       },
+      required: ["problemId"],
     },
   },
   {
-    type: "function",
-    function: {
-      name: "create_problem",
-      description: "Add a new DSA problem to the tracker",
-      parameters: {
-        type: "object",
-        properties: {
-          name: { type: "string", description: "Problem name" },
-          pattern: { type: "string", description: "Pattern category" },
-          difficulty: { type: "string", enum: ["Easy", "Medium", "Hard"] },
-          status: { type: "string", enum: ["NotStarted", "Solving", "Solved", "Revision"] },
-          confidence: { type: "number" },
-          weakPoints: { type: "string" },
-          coreIdea: { type: "string" },
-          keyLine: { type: "string" },
-          edgeCase: { type: "string" },
-          timeSpace: { type: "string" },
-          leetcodeNum: { type: "number" },
-        },
-        required: ["name", "pattern", "difficulty"],
+    name: "create_problem",
+    description: "Add a new DSA problem to the tracker",
+    input_schema: {
+      type: "object",
+      properties: {
+        name: { type: "string", description: "Problem name" },
+        pattern: { type: "string", description: "Pattern category" },
+        difficulty: { type: "string", enum: ["Easy", "Medium", "Hard"] },
+        status: { type: "string", enum: ["NotStarted", "Solving", "Solved", "Revision"] },
+        confidence: { type: "number" },
+        weakPoints: { type: "string" },
+        coreIdea: { type: "string" },
+        keyLine: { type: "string" },
+        edgeCase: { type: "string" },
+        timeSpace: { type: "string" },
+        leetcodeNum: { type: "number" },
       },
+      required: ["name", "pattern", "difficulty"],
     },
   },
   {
-    type: "function",
-    function: {
-      name: "create_rakshak_task",
-      description: "Add a new task to the Rakshak project board",
-      parameters: {
-        type: "object",
-        properties: {
-          title: { type: "string" },
-          category: { type: "string", enum: ["backend", "android", "architecture", "docs"] },
-          status: { type: "string", enum: ["todo", "in_progress", "done"] },
-          priority: { type: "number" },
-          details: { type: "string" },
-        },
-        required: ["title", "category"],
+    name: "create_rakshak_task",
+    description: "Add a new task to the Rakshak project board",
+    input_schema: {
+      type: "object",
+      properties: {
+        title: { type: "string" },
+        category: { type: "string", enum: ["backend", "android", "architecture", "docs"] },
+        status: { type: "string", enum: ["todo", "in_progress", "done"] },
+        priority: { type: "number" },
+        details: { type: "string" },
       },
+      required: ["title", "category"],
     },
   },
   {
-    type: "function",
-    function: {
-      name: "update_rakshak_task",
-      description: "Update a Rakshak project task's status or details",
-      parameters: {
-        type: "object",
-        properties: {
-          taskId: { type: "string", description: "The task ID" },
-          status: { type: "string", enum: ["todo", "in_progress", "done"] },
-          title: { type: "string" },
-          priority: { type: "number" },
-          details: { type: "string" },
-        },
-        required: ["taskId"],
+    name: "update_rakshak_task",
+    description: "Update a Rakshak project task's status or details",
+    input_schema: {
+      type: "object",
+      properties: {
+        taskId: { type: "string", description: "The task ID" },
+        status: { type: "string", enum: ["todo", "in_progress", "done"] },
+        title: { type: "string" },
+        priority: { type: "number" },
+        details: { type: "string" },
       },
+      required: ["taskId"],
     },
   },
   {
-    type: "function",
-    function: {
-      name: "update_subject_topic",
-      description: "Update a core subject topic's progress or completion",
-      parameters: {
-        type: "object",
-        properties: {
-          topicId: { type: "string", description: "The topic ID" },
-          completed: { type: "boolean" },
-          progress: { type: "number", description: "Progress 0-100" },
-          notes: { type: "string" },
-        },
-        required: ["topicId"],
+    name: "update_subject_topic",
+    description: "Update a core subject topic's progress or completion",
+    input_schema: {
+      type: "object",
+      properties: {
+        topicId: { type: "string", description: "The topic ID" },
+        completed: { type: "boolean" },
+        progress: { type: "number", description: "Progress 0-100" },
+        notes: { type: "string" },
       },
+      required: ["topicId"],
     },
   },
 ];
@@ -424,7 +403,7 @@ TEACHING RULES:
 9. For Rakshak project questions: suggest next features, architecture improvements, help debug issues, and break down complex features into actionable tasks using your deep knowledge of the project's tech stack, architecture, and current status`;
 
     // ------------------------------------------------------------------
-    // 3. Build message array with history
+    // 3. Build message array with history (no system message in array)
     // ------------------------------------------------------------------
 
     const history = await prisma.aiConversation.findMany({
@@ -433,21 +412,18 @@ TEACHING RULES:
       take: 20,
     });
 
-    const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
-      { role: "system", content: systemPrompt },
-      ...history.map((h) => ({
-        role: h.role as "user" | "assistant",
-        content: h.message,
-      })),
-    ];
+    const messages: Anthropic.MessageParam[] = history.map((h) => ({
+      role: h.role as "user" | "assistant",
+      content: h.message,
+    }));
 
     // ------------------------------------------------------------------
-    // 4. Call OpenAI (with fallback when key is missing)
+    // 4. Call Anthropic (with fallback when key is missing)
     // ------------------------------------------------------------------
 
-    if (!process.env.OPENAI_API_KEY) {
+    if (!process.env.ANTHROPIC_API_KEY) {
       const fallbackMessage =
-        "AI mentoring is currently unavailable (OPENAI_API_KEY not configured). Please set the OPENAI_API_KEY environment variable to enable AI chat.";
+        "AI mentoring is currently unavailable (ANTHROPIC_API_KEY not configured). Please set the ANTHROPIC_API_KEY environment variable to enable AI chat.";
 
       const assistantConvo = await prisma.aiConversation.create({
         data: {
@@ -461,17 +437,16 @@ TEACHING RULES:
       return c.json({ data: assistantConvo });
     }
 
-    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-    let response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages,
+    let response = await anthropic.messages.create({
+      model: "claude-opus-4-20250514",
+      max_tokens: 4096,
+      system: systemPrompt,
       tools,
-      max_tokens: 1500,
-      temperature: 0.7,
+      messages,
     });
 
-    let choice = response.choices[0];
     const actionsPerformed: string[] = [];
 
     // ------------------------------------------------------------------
@@ -479,39 +454,45 @@ TEACHING RULES:
     // ------------------------------------------------------------------
 
     let iterations = 0;
-    while (choice.finish_reason === "tool_calls" && choice.message.tool_calls && iterations < 5) {
+    while (response.stop_reason === "tool_use" && iterations < 5) {
       iterations++;
 
-      // Add the assistant's tool-call message to the conversation
-      messages.push(choice.message as OpenAI.Chat.Completions.ChatCompletionMessageParam);
+      // Add the assistant's response to the conversation
+      messages.push({ role: "assistant", content: response.content });
 
-      // Execute each requested tool
-      for (const toolCall of choice.message.tool_calls) {
-        if (toolCall.type !== "function") continue;
-        const args = JSON.parse(toolCall.function.arguments) as Record<string, unknown>;
-        const result = await executeTool(toolCall.function.name, args);
-        actionsPerformed.push(`${toolCall.function.name}: ${result}`);
+      // Execute each tool_use block and collect results
+      const toolResults: Anthropic.ToolResultBlockParam[] = [];
+      for (const block of response.content) {
+        if (block.type !== "tool_use") continue;
+        const args = block.input as Record<string, unknown>;
+        const result = await executeTool(block.name, args);
+        actionsPerformed.push(`${block.name}: ${result}`);
 
-        messages.push({
-          role: "tool",
-          tool_call_id: toolCall.id,
+        toolResults.push({
+          type: "tool_result",
+          tool_use_id: block.id,
           content: result,
         });
       }
 
-      // Ask the model to continue
-      response = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
-        messages,
-        tools,
-        max_tokens: 1500,
-        temperature: 0.7,
-      });
+      // Add tool results as a user message
+      messages.push({ role: "user", content: toolResults });
 
-      choice = response.choices[0];
+      // Ask the model to continue
+      response = await anthropic.messages.create({
+        model: "claude-opus-4-20250514",
+        max_tokens: 4096,
+        system: systemPrompt,
+        tools,
+        messages,
+      });
     }
 
-    const assistantMessage = choice.message?.content || "Done! I've updated your data.";
+    // Extract text from the final response content blocks
+    const textBlocks = response.content.filter(
+      (block): block is Anthropic.TextBlock => block.type === "text"
+    );
+    const assistantMessage = textBlocks.map((b) => b.text).join("\n") || "Done! I've updated your data.";
 
     if (actionsPerformed.length > 0) {
       console.log("[AI Actions Summary]", actionsPerformed);

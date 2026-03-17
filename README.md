@@ -16,7 +16,7 @@ A personal AI coding mentor and 3.5-month placement preparation system. Tracks D
 
 - **Frontend**: React 18 + Vite + TailwindCSS + shadcn/ui + Framer Motion
 - **Backend**: Hono + Bun + Prisma (SQLite)
-- **AI**: OpenAI API (GPT-4o-mini) for the mentor chat
+- **AI**: Anthropic Claude API (Claude Opus) for the mentor chat
 - **State**: TanStack Query (React Query)
 
 ## Pre-populated Data
@@ -47,4 +47,4 @@ The app comes seeded with the user's actual DSA progress:
 
 ## Environment Variables
 
-- `OPENAI_API_KEY` - Required for AI Mentor chat (set via ENV tab)
+- `ANTHROPIC_API_KEY` - Required for AI Mentor chat (set via ENV tab)

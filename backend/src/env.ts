@@ -8,8 +8,8 @@ const envSchema = z.object({
   // Server Configuration
   PORT: z.string().optional().default("3000"),
   NODE_ENV: z.string().optional(),
-  // OpenAI API Key (optional - AI chat will show fallback message if not set)
-  OPENAI_API_KEY: z.string().optional(),
+  // Anthropic API Key (optional - AI chat will show fallback message if not set)
+  ANTHROPIC_API_KEY: z.string().optional(),
 });
 
 /**
