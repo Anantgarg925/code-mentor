@@ -1,4 +1,4 @@
-import { Sparkles, Brain, Zap, MessageSquare, ChevronRight } from "lucide-react";
+import { Sparkles, Brain, Zap, MessageSquare, ChevronRight, BookOpen, Cpu, Database, Globe, Layers, Code2 } from "lucide-react";
 
 const PROMPTS = [
   {
@@ -28,26 +28,58 @@ const PROMPTS = [
   },
 ];
 
+const SUBJECT_PROMPTS = [
+  { label: "Teach me OOP: Inheritance & Polymorphism", icon: Code2 },
+  { label: "Explain OS: Process vs Thread & Scheduling", icon: Cpu },
+  { label: "Teach me DB: Normalization & Indexing", icon: Database },
+  { label: "Explain Networks: TCP/IP & HTTP basics", icon: Globe },
+  { label: "Teach System Design: CAP theorem & Trade-offs", icon: Layers },
+];
+
 interface QuickPromptsProps {
   onSelect: (prompt: string) => void;
 }
 
 export function QuickPrompts({ onSelect }: QuickPromptsProps) {
   return (
-    <div className="flex flex-wrap gap-2">
-      {PROMPTS.map((p) => {
-        const Icon = p.icon;
-        return (
-          <button
-            key={p.label}
-            onClick={() => onSelect(p.label)}
-            className="group flex items-center gap-2 px-3 py-2 rounded-full border border-border bg-card/60 hover:bg-primary/10 hover:border-primary/30 transition-all text-sm text-muted-foreground hover:text-foreground"
-          >
-            <Icon className="h-3.5 w-3.5 text-primary/70 group-hover:text-primary transition-colors" />
-            <span>{p.label}</span>
-          </button>
-        );
-      })}
+    <div className="space-y-3">
+      <div className="flex flex-wrap gap-2">
+        {PROMPTS.map((p) => {
+          const Icon = p.icon;
+          return (
+            <button
+              key={p.label}
+              onClick={() => onSelect(p.label)}
+              className="group flex items-center gap-2 px-3 py-2 rounded-full border border-border bg-card/60 hover:bg-primary/10 hover:border-primary/30 transition-all text-sm text-muted-foreground hover:text-foreground"
+            >
+              <Icon className="h-3.5 w-3.5 text-primary/70 group-hover:text-primary transition-colors" />
+              <span>{p.label}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="space-y-1.5">
+        <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-muted-foreground font-medium">
+          <BookOpen className="h-3 w-3" />
+          Core Subjects — notes auto-saved after each lesson
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {SUBJECT_PROMPTS.map((p) => {
+            const Icon = p.icon;
+            return (
+              <button
+                key={p.label}
+                onClick={() => onSelect(p.label)}
+                className="group flex items-center gap-2 px-3 py-2 rounded-full border border-emerald-500/20 bg-emerald-400/5 hover:bg-emerald-400/10 hover:border-emerald-500/30 transition-all text-sm text-muted-foreground hover:text-foreground"
+              >
+                <Icon className="h-3.5 w-3.5 text-emerald-400/70 group-hover:text-emerald-400 transition-colors" />
+                <span>{p.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }
