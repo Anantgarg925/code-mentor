@@ -6,7 +6,7 @@ A personal AI coding mentor and 3.5-month placement preparation system. Tracks D
 
 - **Dashboard** - Overview with stats, pattern mastery, revision queue, today's tasks
 - **DSA Tracker** - Problem management with filters, charts, and detailed notes
-- **AI Mentor** - Chat with an AI that knows your exact DSA progress and weak points
+- **AI Mentor** - Chat with an AI that knows your exact DSA progress, weak points, AND full Rakshak project knowledge (architecture, tech stack, features, ML model, user flow)
 - **Daily Planner** - Auto-generated daily tasks based on progress gaps
 - **3.5 Month Roadmap** - Phased placement preparation timeline
 - **Rakshak Board** - Kanban project management for the Rakshak app

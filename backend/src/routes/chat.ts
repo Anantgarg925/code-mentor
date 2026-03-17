@@ -345,6 +345,61 @@ ${problemList || "  (none yet)"}
 TODAY'S TASKS (${today}):
 ${todayTaskList}
 
+RAKSHAK PROJECT KNOWLEDGE:
+Rakshak ("Protector" in Hindi) is a smart personal safety and emergency response system for road accidents. It auto-detects vehicle accidents using on-device ML (accelerometer + gyroscope data) and dispatches ambulances without manual intervention — the victim may be unconscious.
+
+Tech Stack:
+- Android App: Native Android, Java, MVVM, Material Design 3, Retrofit/OkHttp, Google Maps SDK, Firebase Auth (Google Sign-In + Phone OTP), TensorFlow Lite, OkHttp3 WebSocket
+- Backend: Spring Boot, Java 17, PostgreSQL (rakshak_db), Spring WebSocket, JPA/Hibernate, Maven, port 8081
+- Web Dashboard: Angular 20, TypeScript, Bootstrap 5.3.7, standalone components, RxJS
+- ML Pipeline: Python 3.9, TensorFlow/Keras, trained on Simulated Falls + UCI HAR + HAPT + WISDM datasets, outputs model.tflite
+
+Core Features:
+1. ML Accident Detection — TFLite model, 6 features (accel xyz + gyro xyz), 128-reading sliding window, 0.95 confidence threshold
+2. Manual SOS — 3-second long-press
+3. 15-second Safety Countdown — cancel false alarms before alert sends
+4. Automatic Ambulance Dispatch from pre-configured pool
+5. Live Ambulance Tracking — Google Maps via WebSocket (5-sec updates)
+6. Hospital Notification with ETA
+7. Medical Profile — blood type, conditions, allergies for first responders
+8. Emergency Contacts Management
+9. Accident History Log with time filters and statistics
+10. Foreground Monitoring Service — survives app backgrounding
+
+Admin/Hospital Web Dashboard Modules:
+- Ambulance Control Panel: view and acknowledge accident alerts
+- Traffic Signal Control: toggle signals at intersections
+- Hospital Bed Status: ICU, General, Emergency availability
+- Patient Tracker: real-time patient info with vitals
+- Hospital Readiness: incoming patient list with injury type and ETA
+
+Android App Screens (25 layouts):
+- SplashActivity: 4-sec animated boot (Security, Sensors, GPS, Monitoring init)
+- LoginActivity: Google Sign-In or Phone OTP
+- MainActivity: Bottom nav (Home, History, Settings, Profile) + floating SOS button
+- HomeFragment: detection status, sensor data, toggle controls
+- HistoryFragment: accident history with time filters and statistics
+- SettingsFragment: auto-start, haptic, voice commands, notifications, location sharing, test mode
+- ProfileFragment: user info, medical info, emergency contacts CRUD
+- EmergencyAlertActivity: 15-sec countdown with cancel/send
+- EmergencyTrackingActivity: live Google Maps ambulance tracking
+
+Backend API Endpoints:
+- POST /api/accident/report — validates user, dispatches ambulance, broadcasts WebSocket, persists history
+- POST /api/hospital/notify — sends ambulance ID, device ID, ETA to hospital
+- WebSocket /tracking — real-time ambulance location updates
+
+ML Model Details:
+- SensorManager registers accelerometer (x/y/z) + gyroscope (x/y/z) at SENSOR_DELAY_GAME rate
+- Sliding window deque of 128 readings, each with 6 features
+- model.tflite loaded via memory-mapped I/O
+- Confidence > 0.95 triggers onAccidentDetected() callback
+
+User Flow: App Launch (4-sec splash) -> Firebase Auth -> Backend Registration -> Home (sensor monitoring) -> Foreground service continuous monitoring -> Accident detected (confidence > 0.95) -> EmergencyAlertActivity (15-sec countdown, user can cancel) -> Alert sent with GPS -> Ambulance dispatched via WebSocket -> Live tracking on Google Maps
+
+Current Status: Prototype with hardcoded ambulance data (3 units in Delhi), simulated ambulance movement, static hospital data. Demonstrates complete end-to-end flow.
+GitHub: https://github.com/Anantgarg925/Rakshak
+
 RAKSHAK PROJECT TASKS:
 ${rakshakList}
 
@@ -365,7 +420,8 @@ TEACHING RULES:
 5. Proactively create daily tasks when planning study sessions
 6. When the user says they completed something, mark it done
 7. Be encouraging but honest about areas needing work
-8. Always include IDs silently in your function calls – never ask the user for an ID`;
+8. Always include IDs silently in your function calls – never ask the user for an ID
+9. For Rakshak project questions: suggest next features, architecture improvements, help debug issues, and break down complex features into actionable tasks using your deep knowledge of the project's tech stack, architecture, and current status`;
 
     // ------------------------------------------------------------------
     // 3. Build message array with history
