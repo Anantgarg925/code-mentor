@@ -1,0 +1,11 @@
+{
+  "buildCommand": "npm install && npx prisma generate --schema=backend/prisma/schema.prisma && cd webapp && npm install && npm run build",
+  "outputDirectory": "webapp/dist",
+  "framework": null,
+  "rewrites": [
+    {
+      "source": "/((?!api|_next|favicon).*)",
+      "destination": "/index.html"
+    }
+  ]
+}
