@@ -8,6 +8,6 @@
     "skipLibCheck": true,
     "outDir": "dist"
   },
-  "include": ["api/**/*"],
-  "exclude": ["node_modules", "webapp", "backend"]
+  "include": ["./**/*"],
+  "exclude": ["node_modules"]
 }
